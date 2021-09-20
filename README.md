@@ -1,7 +1,7 @@
 # [`mui-scrollable-slider-hook`](https://www.npmjs.com/package/mui-scrollable-slider-hook)
 
 ![CI](https://github.com/morganney/mui-scrollable-slider-hook/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/morganney/mui-scrollable-slider-hook/branch/master/graph/badge.svg?token=1DWQL43B8V)](https://codecov.io/gh/morganney/mui-scrollable-slider-hook)
+[![codecov](https://codecov.io/gh/morganney/mui-scrollable-slider-hook/branch/develop/graph/badge.svg?token=ZDOYLLR6M4)](https://codecov.io/gh/morganney/mui-scrollable-slider-hook)
 
 Prevents unwanted [MUI Slider](https://mui.com/components/slider/) changes while scrolling on a mobile device.
 
