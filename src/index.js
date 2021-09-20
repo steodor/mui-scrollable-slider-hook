@@ -1,0 +1,1 @@
+export { useMuiScrollableSlider } from './hook'
