@@ -7,7 +7,7 @@ Prevents unwanted [MUI Slider](https://mui.com/components/slider/) changes while
 
 ## Usage
 
-First `npm i mui-scrollable-slider-hook react react-dom @mui/material`.
+First `npm i mui-scrollable-slider-hook react react-dom @mui/material @emotion/styled @emotion/react`.
 
 Then when you want to prevent slider values from changing while scrolling on your phone:
 
@@ -61,3 +61,31 @@ return (
   />
 )
 ```
+
+Or made reusable:
+
+```js
+import Slider from '@mui/material/Slider'
+import { useMuiScrollableSlider } from 'mui-scrollable-slider-hook'
+
+const MobileSlider = ({
+  delta = 50,
+  value = 0,
+  onChange = () => {},
+  onChangeCommitted = () => {},
+  ...rest
+}) => {
+  const hookProps = useMuiScrollableSlider({
+    delta,
+    value,
+    onChange,
+    onChangeCommitted
+  })
+
+  return <Slider {...hookProps} {...rest} />
+}
+
+export { MobileSlider }
+```
+
+See it on [CodeSandbox](https://codesandbox.io/embed/mui-scrollable-slider-hook-ljs6g?fontsize=14&hidenavigation=1&theme=dark).

@@ -40,6 +40,8 @@ const useMuiScrollableSlider = options => {
   )
   const onChangeCommitted = useMemo(() => {
     return (evt, value) => {
+      const threshold = delta || defaultOptions.delta
+
       if (evt instanceof TouchEvent) {
         const { changedTouches } = evt
         const touches = Array.from(changedTouches)
@@ -47,7 +49,7 @@ const useMuiScrollableSlider = options => {
         if (
           Array.isArray(touches) &&
           touches.length > 0 &&
-          Math.abs(touchStartY - touches[0].pageY) < delta
+          Math.abs(touchStartY - touches[0].pageY) < threshold
         ) {
           setValue(value)
         }

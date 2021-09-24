@@ -79,6 +79,7 @@ describe('useMuiScrollableSlider', () => {
   it('uses defaults and ignores callback options that are not functions', () => {
     const { result } = renderHook(() =>
       useMuiScrollableSlider({
+        delta: undefined,
         value: null,
         onChange: 'string',
         onChangeCommitted: 'string'
