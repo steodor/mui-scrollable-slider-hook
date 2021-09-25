@@ -51,7 +51,6 @@ describe('useMuiScrollableSlider', () => {
       result.current.onChange(touchEndEvent, 25)
     })
 
-    expect(onChangeMock).toHaveBeenCalled()
     expect(result.current.value).toBe(20)
 
     act(() => {
@@ -72,7 +71,7 @@ describe('useMuiScrollableSlider', () => {
       result.current.onChangeCommitted(scrollTouchEvent, 75)
     })
 
-    expect(onChangeCommittedMock).toHaveBeenCalledWith(scrollTouchEvent, 75)
+    expect(onChangeCommittedMock).not.toHaveBeenCalledWith(scrollTouchEvent, 75)
     expect(result.current.value).toBe(30)
   })
 
@@ -93,6 +92,34 @@ describe('useMuiScrollableSlider', () => {
       result.current.onChangeCommitted(new MouseEvent('click'), 10)
     })
 
+    expect(result.current.value).toBe(10)
+  })
+
+  it('changes value at a pageY < delta when no touchstart touches', () => {
+    const { result } = renderHook(() => useMuiScrollableSlider())
+
+    act(() => {
+      mockEventTarget.dispatchEvent(
+        new TouchEvent('touchstart', {
+          changedTouches: []
+        })
+      )
+    })
+
+    act(() => {
+      result.current.onChangeCommitted(
+        new TouchEvent('touchend', { changedTouches: [{ pageY: 51 }] }),
+        10
+      )
+    })
+    expect(result.current.value).toBe(0)
+
+    act(() => {
+      result.current.onChangeCommitted(
+        new TouchEvent('touchend', { changedTouches: [{ pageY: 49 }] }),
+        10
+      )
+    })
     expect(result.current.value).toBe(10)
   })
 })
