@@ -17,30 +17,44 @@ const useMuiScrollableSlider = options => {
   const ref = useRef(null)
   const [value, setValue] = useState(() => valueProp ?? 0)
   const [touchStartY, setTouchStartY] = useState(0)
+  const [onChangeCallback, onChangeCommittedCallback] = useMemo(() => {
+    const callbacks = [() => {}, () => {}]
+
+    if (typeof onChangeProp === 'function') {
+      callbacks.splice(0, 1, onChangeProp)
+    }
+
+    if (typeof onChangeCommittedProp === 'function') {
+      callbacks.splice(1, 1, onChangeCommittedProp)
+    }
+
+    return callbacks
+  }, [onChangeProp, onChangeCommittedProp])
   const onChangeDebounced = useMemo(() => {
     return debounce(
-      (evt, value) => {
+      (evt, value, activeThumb) => {
         if (evt instanceof MouseEvent) {
           setValue(value)
+          onChangeCallback(evt, value, activeThumb)
         }
       },
       25,
       { leading: true, maxWait: 50 }
     )
-  }, [setValue])
+  }, [setValue, onChangeCallback])
   const handleOnChange = useCallback(
     (evt, value, activeThumb) => {
       onChangeDebounced(evt, value, activeThumb)
-
-      if (typeof onChangeProp === 'function') {
-        onChangeProp(evt, value, activeThumb)
-      }
     },
-    [onChangeDebounced, onChangeProp]
+    [onChangeDebounced]
   )
-  const onChangeCommitted = useMemo(() => {
-    return (evt, value) => {
+  const handleOnChangeCommitted = useCallback(
+    (evt, value) => {
       const threshold = delta || defaultOptions.delta
+      const setValueCallback = () => {
+        setValue(value)
+        onChangeCommittedCallback(evt, value)
+      }
 
       if (evt instanceof TouchEvent) {
         const { changedTouches } = evt
@@ -51,33 +65,33 @@ const useMuiScrollableSlider = options => {
           touches.length > 0 &&
           Math.abs(touchStartY - touches[0].pageY) < threshold
         ) {
-          setValue(value)
+          setValueCallback()
         }
       } else {
-        setValue(value)
-      }
-    }
-  }, [delta, touchStartY])
-  const handleOnChangeCommitted = useCallback(
-    (evt, value) => {
-      onChangeCommitted(evt, value)
-
-      if (typeof onChangeCommittedProp === 'function') {
-        onChangeCommittedProp(evt, value)
+        setValueCallback()
       }
     },
-    [onChangeCommitted, onChangeCommittedProp]
+    [delta, touchStartY, onChangeCommittedCallback]
   )
 
   useLayoutEffect(() => {
-    if (ref.current) {
-      ref.current.addEventListener('touchstart', ({ changedTouches }) => {
-        const touches = Array.from(changedTouches)
+    const refCurrent = ref.current
+    const handleTouchStart = ({ changedTouches }) => {
+      const touches = Array.from(changedTouches)
 
-        if (Array.isArray(touches) && touches.length > 0) {
-          setTouchStartY(touches[0].pageY)
-        }
-      })
+      if (Array.isArray(touches) && touches.length > 0) {
+        setTouchStartY(touches[0].pageY)
+      }
+    }
+
+    if (refCurrent) {
+      refCurrent.addEventListener('touchstart', handleTouchStart)
+    }
+
+    return () => {
+      if (refCurrent) {
+        refCurrent.removeEventListener('touchstart', handleTouchStart)
+      }
     }
   }, [ref])
 
