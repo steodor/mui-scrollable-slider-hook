@@ -1,6 +1,6 @@
 {
   "name": "mui-scrollable-slider-hook",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Prevent slider value changes while scrolling vertically on touch devices",
   "main": "dist",
   "repository": {
